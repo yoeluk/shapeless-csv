@@ -131,7 +131,7 @@ object CsvParser {
    * @param gen The Generic allowing to convert from a `Repr` HList to a `Case` case class
    * @param reprParser The `CsvParser` that can parse a CSV line into an HList of type `Repr`
    */
-  implicit def caseClassParser[Case, Repr <: HList](implicit gen: Generic.Aux[Case, Repr], reprParser: Lazy[CsvParser[Repr]]): CsvParser[Case] = {
+  implicit def caseClassParser[Case, Repr0 <: HList](implicit gen: Generic[Case] { type Repr = Repr0}, reprParser: Lazy[CsvParser[Repr0]]): CsvParser[Case] = {
     instance(reprParser.value.size) { cells =>
       reprParser.value.parse(cells).right.map { parsed =>
         (gen.from(parsed))
